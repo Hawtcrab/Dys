@@ -67,4 +67,16 @@ public class Actor {
     public String getHoverText() {
         return "This is a thing.";
     }
+
+    public void onBumpedIntoBy (Actor a) {
+
+    }
+
+    public String bumpText () {
+        return "Test";
+    }
+
+    public void onTick() {
+
+    }
 }

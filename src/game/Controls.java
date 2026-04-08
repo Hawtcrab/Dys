@@ -2,6 +2,7 @@ package game;
 
 import game.actors.Actor;
 import game.map.Cell;
+import game.mechanics.GameTime;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -24,6 +25,7 @@ public class Controls extends KeyAdapter {
         var p = Main.currentPlayer;
         if (CanMoveThere(Main.currentPlayer, p.getX() + xoffset, p.getY() + yoffset)) {
             Main.currentPlayer.setPositionOffseted(xoffset, yoffset, true);
+            GameTime.tickTurn();
             return true;
         }
         return false;
@@ -34,13 +36,20 @@ public class Controls extends KeyAdapter {
         if (x < Main.currentMap.width && y < Main.currentMap.height && x >= 0 && y >= 0) {
             cell = Main.currentMap.cells[x][y];
         }
-        return CanMoveThere(a, cell);
+        var result = CanMoveThere(a, cell);
+        if (result == MovementResult.BlockedByActor && cell != null) {
+            cell.actor.onBumpedIntoBy(a);
+            return true;
+        }
+        return result == MovementResult.Valid;
     }
 
     /// In case that an actor tries to move into itself, returns false, to prevent any further movement logic from firing.
-    public static boolean CanMoveThere(Actor a, Cell c) {
-        if (c == null) return false;
-        if (c.actor == null) return true;
-        return a != c.actor;
+    public static MovementResult CanMoveThere(Actor a, Cell c) {
+        if (c == null) return MovementResult.BlockedByBoundaries;
+        if (c.actor == null) return MovementResult.Valid;
+        if (a == c.actor) return MovementResult.InvalidMovement;
+        return MovementResult.BlockedByActor;
     }
 }
+

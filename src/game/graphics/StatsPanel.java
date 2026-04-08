@@ -1,6 +1,7 @@
 package game.graphics;
 
 import game.Main;
+import game.mechanics.GameTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,8 +32,8 @@ public class StatsPanel extends JPanel {
         y += 20;
 
         g.drawString("Name: " + p.getName(), 10, y); y += 20;
-        g.drawString("X: " + p.getX(), 10, y); y += 20;
-        g.drawString("Y: " + p.getY(), 10, y); y += 20;
+        g.drawString("Time: " + GameTime.timeString(), 10, y); y += 20;
+
 
         // add more later:
         g.drawString("HP: 100", 10, y); y += 20;
