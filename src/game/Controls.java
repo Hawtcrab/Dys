@@ -1,5 +1,8 @@
 package game;
 
+import game.actors.Actor;
+import game.map.Cell;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -17,7 +20,27 @@ public class Controls extends KeyAdapter {
 
     }
 
-    public void tryMoveByKey(int yoffset, int xoffset) {
-        Main.currentPlayer.setPosition(xoffset, yoffset);
+    public boolean tryMoveByKey(int xoffset, int yoffset) {
+        var p = Main.currentPlayer;
+        if (CanMoveThere(Main.currentPlayer, p.getX() + xoffset, p.getY() + yoffset)) {
+            Main.currentPlayer.setPositionOffseted(xoffset, yoffset, true);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean CanMoveThere(Actor a, int x, int y) {
+        Cell cell = null;
+        if (x < Main.currentMap.width && y < Main.currentMap.height && x >= 0 && y >= 0) {
+            cell = Main.currentMap.cells[x][y];
+        }
+        return CanMoveThere(a, cell);
+    }
+
+    /// In case that an actor tries to move into itself, returns false, to prevent any further movement logic from firing.
+    public static boolean CanMoveThere(Actor a, Cell c) {
+        if (c == null) return false;
+        if (c.actor == null) return true;
+        return a != c.actor;
     }
 }

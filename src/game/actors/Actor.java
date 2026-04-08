@@ -5,13 +5,14 @@ import game.graphics.GameIcon;
 
 public class Actor {
     private GameIcon icon;
+    private int x, y;
     private String name;
-    private int[] position = new int[2];
 
-    public Actor (GameIcon icon, String name) {
+    public Actor (int x, int y, GameIcon icon, String name) {
         this.icon = icon;
         this.name = name;
-        this.position = position;
+        this.x = x;
+        this.y = y;
     }
 
     public GameIcon getIcon() {
@@ -22,21 +23,48 @@ public class Actor {
         return name;
     }
 
-    public int[] getPosition() {
-        return this.position;
+    public int getX() {
+        return this.x;
+    }
+    public int getY() { return this.y;}
+
+    public void setPositionOffseted(int offsetx, int offsety, boolean offset) {
+        if (offset)
+            setPosition(x + offsetx, y + offsety);
+        else
+            setPosition(offsetx,offsety);
     }
 
-    public void setPosition(int offsetx, int offsety) {
-        var newpos = new int[] {position[0] + offsetx, position[1] + offsety};
-        setPosition(newpos);
-    }
+    public void setPosition(int newx, int newy) {
+        var map = Main.currentMap;
 
-    public void setPosition(int[] newpos) {
-
-        if (position != null) {
-            Main.currentMap.cells[position[0]][position[1]].actor = null;
+        // bounds check
+        if (newx < 0 || newx >= map.width ||
+                newy < 0 || newy >= map.height) {
+            return;
         }
-        Main.currentMap.cells[newpos[0]][newpos[1]].actor = this;
-        this.position = newpos;
+
+        // remove from old cell
+        if (map.cells[x][y].actor == this) {
+            map.cells[x][y].actor = null;
+        }
+
+        // update position
+        this.x = newx;
+        this.y = newy;
+
+        // place in new cell
+        if (map.cells[newx][newy].actor != null) {
+            return; // or handle combat, etc.
+        }
+        map.cells[x][y].actor = this;
+    }
+
+    public void place() {
+        Main.currentMap.cells[x][y].actor = this;
+    }
+
+    public String getHoverText() {
+        return "This is a thing.";
     }
 }

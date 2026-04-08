@@ -9,12 +9,16 @@ public class Cell {
 
     public static GameIcon BASIC_FLOOR = new GameIcon(46, Color.WHITE, Color.BLACK);
 
+    int x;
+    int y;
     GameIcon terrain;
     public Actor actor;
     Color fg;
     Color bg;
 
-    Cell(GameIcon terrain, Actor actor, Color fg, Color bg) {
+    Cell(int x, int y, GameIcon terrain, Actor actor, Color fg, Color bg) {
+        this.x = x;
+        this.y = y;
         this.terrain = terrain;
         this.actor = actor;
         this.fg = fg;
@@ -24,6 +28,12 @@ public class Cell {
     public GameIcon getTopIcon() {
         if (actor != null) return actor.getIcon();
         return this.terrain;
+    }
+
+    public String getHoverText() {
+        var text = "x: " + this.x + ", y: " + this.y;
+        if (actor != null) text += actor.getHoverText();
+        return text;
     }
 
 }
